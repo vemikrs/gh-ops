@@ -1,49 +1,58 @@
-# Starlight Starter Kit: Basics
+🌐 Available in: [English](README.md) | [日本語](README.ja.md)
 
-[![Built with Starlight](https://astro.badg.es/v2/built-with-starlight/tiny.svg)](https://starlight.astro.build)
+# GitHub Organizational Operations & Principles Guide
 
-```
-npm create astro@latest -- --template starlight
-```
+🚧 **Work in Progress** — This project is in early development.  
+Contributions and feedback are welcome.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+---
 
-## 🚀 Project Structure
+## About
 
-Inside of your Astro + Starlight project, you'll see the following folders and files:
+**GitHub Organizational Operations & Principles Guide** is a public, vendor-neutral handbook for adopting and operating GitHub at any scale — from a single Organization to a full Enterprise account.  
 
-```
-.
-├── public/
-├── src/
-│   ├── assets/
-│   ├── content/
-│   │   └── docs/
-│   └── content.config.ts
-├── astro.config.mjs
-├── package.json
-└── tsconfig.json
-```
+This guide complements official GitHub documentation by providing:
 
-Starlight looks for `.md` or `.mdx` files in the `src/content/docs/` directory. Each file is exposed as a route based on its file name.
+- **Principles (Bible):** Why governance, safety, agility, and sustainability matter.  
+- **Operations (Framework):** How to apply these principles in daily practice.  
+- **Do & Don’t:** Practical patterns and anti-patterns observed in real-world adoption.  
 
-Images can be added to `src/assets/` and embedded in Markdown with a relative link.
+---
 
-Static assets, like favicons, can be placed in the `public/` directory.
+## Scope
 
-## 🧞 Commands
+The guide covers the full lifecycle:
 
-All commands are run from the root of the project, from a terminal:
+1. **Adoption** — Introducing GitHub and Copilot in a safe, staged manner.  
+2. **Operations** — Day-to-day governance, compliance, and security practices.  
+3. **Evolution** — Scaling from small teams to enterprise-wide use, incorporating new features.  
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+It is intended for:
+- **Administrators** setting up and managing Organizations/Enterprise accounts  
+- **Team leads and developers** navigating GitHub adoption  
+- **Compliance and governance officers** ensuring safe and sustainable use  
 
-## 👀 Want to learn more?
+---
 
-Check out [Starlight’s docs](https://starlight.astro.build/), read [the Astro documentation](https://docs.astro.build), or jump into the [Astro Discord server](https://astro.build/chat).
+## Why another guide?
+
+Official GitHub docs provide excellent references.  
+This guide adds value by:
+
+- Emphasizing **psychological safety and clarity** for teams unfamiliar with Git/GitHub.  
+- Offering a **Bible ⇔ Framework dual structure**: principles to return to, and practical steps to follow.  
+- Providing **Do & Don’t examples** to reduce trial-and-error in large organizations.  
+- Framing the journey as **Adoption → Operations → Evolution**, not just one-time onboarding.  
+
+---
+
+## Contributing
+
+We welcome issues, discussions, and pull requests.  
+Please see [CONTRIBUTING.md](CONTRIBUTING.md) (WIP) for contribution guidelines.
+
+---
+
+## License
+
+MIT License. See [LICENSE](LICENSE) for details.
