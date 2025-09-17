@@ -2,28 +2,39 @@ import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 
 export default defineConfig({
+  site: 'https://gh-ops.vemi.jp',
   integrations: [
     starlight({
       title: 'GitHub Organizational Operations & Principles Guide',
       sidebar: [
         {
           label: '原則（Bible）',
-          items: [
-            { label: '概要', link: '/bible/overview' },
-          ],
+          autogenerate: { 
+            directory: 'bible',
+            collapsed: false,
+          },
         },
         {
           label: '運用（Framework）',
-          items: [
-            { label: '最小運用', link: '/framework/org-team-minimal' },
-            { label: 'Copilotの安全な段階導入', link: '/framework/copilot-safe-rollout' },
-          ],
+          autogenerate: { 
+            directory: 'framework',
+            collapsed: false,
+          },
         },
       ],
       locales: {
-        root: { label: '日本語', lang: 'ja' },
-        en: { label: 'English', lang: 'en' }
-      }
+        root: { 
+          label: '日本語', 
+          lang: 'ja',
+          dir: 'ltr',
+        },
+        en: { 
+          label: 'English', 
+          lang: 'en',
+          dir: 'ltr',
+        },
+      },
+      defaultLocale: 'root',
     }),
   ],
 });
