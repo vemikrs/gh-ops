@@ -22,3 +22,7 @@ pnpm-debug.log*
 
 # History files
 .history/
+
+# Temporary files
+tmp/
+temp/
