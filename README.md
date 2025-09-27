@@ -12,7 +12,7 @@
 GH-OPS Guide は、**企業・組織で GitHub を安心して・持続可能に運用するための実務ガイド**です。  
 公式ドキュメントを補完し、現場の判断を速く安全にするための「共通言語」を提供します。
 
-👉 詳細な構成・目次は [Index](src/content/docs/index.md) をご覧ください。
+👉 詳細な構成・目次は [Index](src/content/docs/index.mdx) をご覧ください。
 
 ---
 
@@ -29,7 +29,7 @@ GH-OPS Guide は、**企業・組織で GitHub を安心して・持続可能に
 このリポジトリは OSS として公開されています。  
 Issue / Discussion / Pull Request を歓迎します。  
 
-- 執筆ルールは [copilot-instructions.md](copilot-instructions.md) を参照してください  
+- 執筆ルールは [.github/copilot-instructions.md](.github/copilot-instructions.md) を参照してください  
 - 貢献フローの詳細は [CONTRIBUTING.md](CONTRIBUTING.md)（準備中）をご確認ください
 
 ---
