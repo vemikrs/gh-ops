@@ -1,0 +1,54 @@
+---
+import { getCollection } from 'astro:content';
+
+const docs = await getCollection('docs');
+
+// evolution 配下の直下ページのみを対象にする（index除外）
+const evolutionEntries = docs.filter((e) =>
+  e.id.startsWith('evolution/') && e.id !== 'evolution/index.mdx'
+);
+
+function toSortKey(id: string) {
+  // id 例: evolution/2025-09-001.mdx, evolution/2025-10.mdx, evolution/2025-09-12-001.mdx
+  const name = id.split('/').pop()!.replace(/\.(md|mdx)$/i, '');
+
+  // パターン1: YYYY-MM-DD-NNN
+  let m = name.match(/^(\d{4})-(\d{2})-(\d{2})-(\d{3})$/);
+  if (m) {
+    const [, y, mo, d, n] = m;
+    return `${y}${mo}${d}${n}`;
+  }
+
+  // パターン2: YYYY-MM-NNN
+  m = name.match(/^(\d{4})-(\d{2})-(\d{3})$/);
+  if (m) {
+    const [, y, mo, n] = m;
+    return `${y}${mo}00${n}`; // 日は 00 扱い
+  }
+
+  // パターン3: YYYY-MM
+  m = name.match(/^(\d{4})-(\d{2})$/);
+  if (m) {
+    const [, y, mo] = m;
+    return `${y}${mo}00000`; // 日 00 + 通番 000
+  }
+
+  // それ以外は末尾に
+  return `000000000${name}`;
+}
+
+const items = evolutionEntries
+  .map((e) => {
+    const href = `/${e.id.replace(/\.(md|mdx)$/i, '/')}`;
+    const title = (e as any)?.data?.title ?? e.id.split('/').pop()?.replace(/\.(md|mdx)$/i, '') ?? e.id;
+    return { href, title, sortKey: toSortKey(e.id) };
+  })
+  .sort((a, b) => (a.sortKey < b.sortKey ? 1 : a.sortKey > b.sortKey ? -1 : 0));
+
+---
+<ul>
+  {items.map((it) => (
+    <li><a href={it.href}>{it.title}</a></li>
+  ))}
+  {items.length === 0 && <li>未登録</li>}
+</ul>
