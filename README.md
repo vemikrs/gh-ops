@@ -1,58 +1,39 @@
-🌐 Available in: [English](README.md) | [日本語](README.ja.md)
+🌐 Available in: [日本語](README.md) | [English](README.en.md)
 
-# GitHub Organizational Operations & Principles Guide
+# GH-OPS Guide
+*GitHub Organizational Operations & Principles Guide*
 
-🚧 **Work in Progress** — This project is in early development.  
-Contributions and feedback are welcome.
-
----
-
-## About
-
-**GitHub Organizational Operations & Principles Guide** is a public, vendor-neutral handbook for adopting and operating GitHub at any scale — from a single Organization to a full Enterprise account.  
-
-This guide complements official GitHub documentation by providing:
-
-- **Principles (Bible):** Why governance, safety, agility, and sustainability matter.  
-- **Operations (Framework):** How to apply these principles in daily practice.  
-- **Do & Don’t:** Practical patterns and anti-patterns observed in real-world adoption.  
+🚧 **WIP** — 初期開発段階です。ご意見・コントリビューションを歓迎します。
 
 ---
 
-## Scope
+## Overview
 
-The guide covers the full lifecycle:
+GH-OPS Guide は、**企業・組織で GitHub を安心して・持続可能に運用するための実務ガイド**です。  
+公式ドキュメントを補完し、現場の判断を速く安全にするための「共通言語」を提供します。
 
-1. **Adoption** — Introducing GitHub and Copilot in a safe, staged manner.  
-2. **Operations** — Day-to-day governance, compliance, and security practices.  
-3. **Evolution** — Scaling from small teams to enterprise-wide use, incorporating new features.  
-
-It is intended for:
-- **Administrators** setting up and managing Organizations/Enterprise accounts  
-- **Team leads and developers** navigating GitHub adoption  
-- **Compliance and governance officers** ensuring safe and sustainable use  
+👉 詳細な構成・目次は [Index](src/content/docs/index.md) をご覧ください。
 
 ---
 
-## Why another guide?
+## Repository Structure
 
-Official GitHub docs provide excellent references.  
-This guide adds value by:
-
-- Emphasizing **psychological safety and clarity** for teams unfamiliar with Git/GitHub.  
-- Offering a **Bible ⇔ Framework dual structure**: principles to return to, and practical steps to follow.  
-- Providing **Do & Don’t examples** to reduce trial-and-error in large organizations.  
-- Framing the journey as **Adoption → Operations → Evolution**, not just one-time onboarding.  
+- `src/content/docs/guidelines/` — 実務ガイド（役割別の手順・設定・ベストプラクティス）  
+- `src/content/docs/evolution/` — Emerging Standards（時点付きアーカイブ）  
+- `src/content/docs/bible/` — 原則集（Principles / Anshin）
 
 ---
 
 ## Contributing
 
-We welcome issues, discussions, and pull requests.  
-Please see [CONTRIBUTING.md](CONTRIBUTING.md) (WIP) for contribution guidelines.
+このリポジトリは OSS として公開されています。  
+Issue / Discussion / Pull Request を歓迎します。  
+
+- 執筆ルールは [copilot-instructions.md](copilot-instructions.md) を参照してください  
+- 貢献フローの詳細は [CONTRIBUTING.md](CONTRIBUTING.md)（準備中）をご確認ください
 
 ---
 
 ## License
 
-MIT License. See [LICENSE](LICENSE) for details.
+MIT — 詳細は [LICENSE](LICENSE) をご覧ください。
