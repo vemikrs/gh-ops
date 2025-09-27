@@ -1,0 +1,4 @@
+:root {
+  /* Keep only a safe accent token for now to avoid layout breakage */
+  --brand-accent: #2f6feb; /* GitHub ブルーに近い */
+}

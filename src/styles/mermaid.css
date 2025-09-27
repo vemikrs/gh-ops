@@ -1,0 +1,10 @@
+.mermaid {
+  --node-fill: #ffffff;
+  --node-stroke: #d0d7de;
+  --cluster-fill: #f7f7f7;
+  --cluster-stroke: #d0d7de;
+}
+
+.mermaid .label, .mermaid text {
+  font-size: 14px;
+}

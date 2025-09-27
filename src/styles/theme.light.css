@@ -1,0 +1,5 @@
+:root {
+  /* Keep minimal overrides */
+  --sl-color-accent: var(--brand-accent);
+  --sl-link-color: var(--brand-accent);
+}

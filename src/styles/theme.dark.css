@@ -1,0 +1,5 @@
+[data-theme='dark'] {
+  /* Keep minimal overrides */
+  --sl-color-accent: #7aa2f7;
+  --sl-link-color: #7aa2f7;
+}
