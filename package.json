@@ -8,11 +8,19 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "test:e2e": "playwright test",
+    "test:e2e:headed": "playwright test --headed",
+    "playwright:install": "playwright install",
+    "mcp:playwright": "npx -y @modelcontextprotocol/cli-client --server.name playwright --server.cmd npx --server.arg -y --server.arg @playwright/mcp",
+    "mcp:dev": "PLAYWRIGHT_BASE_URL=http://localhost:4321 npm run mcp:playwright"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.35.3",
     "astro": "^5.6.1",
     "sharp": "^0.34.2"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.2"
   }
 }
