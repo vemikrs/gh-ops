@@ -1,0 +1,16 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "playwright:msedge:headed",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-lc",
+        "PLAYWRIGHT_BASE_URL=http://localhost:4321 npm run -s test:e2e:headed -- --project=msedge"
+      ],
+      "group": "test",
+      "problemMatcher": []
+    }
+  ]
+}
