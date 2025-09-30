@@ -35,7 +35,7 @@ function localizedPathname(url: URL, locale: string | undefined): string {
   </starlight-lang-select>
 )}
 
-<script is:inline>
+<script is:inline type="module">
   class StarlightLanguageSelect extends HTMLElement {
     btn = null;
     menu = null;
@@ -69,18 +69,31 @@ function localizedPathname(url: URL, locale: string | undefined): string {
       if(!this.menu || !this.btn) return;
       this.menu.removeAttribute('hidden');
       this.btn.setAttribute('aria-expanded', 'true');
-      // position fixed & auto drop direction
-      const r = this.btn.getBoundingClientRect();
-      const spaceBelow = window.innerHeight - r.bottom;
-      const spaceAbove = r.top;
-      const preferUp = spaceBelow < 160 && spaceAbove > spaceBelow; // 160px threshold
-      this.menu.style.position = 'fixed';
-      this.menu.style.right = `${Math.max(8, window.innerWidth - r.right)}px`;
-      this.menu.style.top = preferUp ? '' : `${Math.max(8, r.bottom + 4)}px`;
-      this.menu.style.bottom = preferUp ? `${Math.max(8, window.innerHeight - r.top + 4)}px` : '';
-      this.menu.style.maxHeight = '60vh';
-      this.menu.style.overflow = 'auto';
-      this.menu.style.zIndex = '1000';
+      const positionOnce = () => {
+        const r = this.btn.getBoundingClientRect();
+        const spaceBelow = window.innerHeight - r.bottom;
+        const spaceAbove = r.top;
+        const preferUp = spaceBelow < 160 && spaceAbove > spaceBelow; // 160px threshold
+        if (!this.menu) return;
+        const m = this.menu.style;
+        // reset then set to avoid stale values on first open
+        m.top = '';
+        m.bottom = '';
+        m.position = 'fixed';
+        m.right = `${Math.max(8, window.innerWidth - r.right)}px`;
+        if (preferUp) {
+          m.bottom = `${Math.max(8, window.innerHeight - r.top + 4)}px`;
+        } else {
+          m.top = `${Math.max(8, r.bottom + 4)}px`;
+        }
+        m.maxHeight = '60vh';
+        m.overflow = 'auto';
+        // keep high z-index consistent with CSS (avoid being covered on first open)
+        m.zIndex = '4000';
+      };
+      // position immediately and after next frame to let layout/fonts settle
+      positionOnce();
+      requestAnimationFrame(positionOnce);
     }
     closeMenu(){
       if(!this.menu || !this.btn) return;
@@ -96,10 +109,11 @@ function localizedPathname(url: URL, locale: string | undefined): string {
 <style>
   .lang-picker { position: relative; }
   .icon-only { background:none; border:0; padding:.25rem; border-radius:6px; color:var(--sl-color-text); }
-  .icon-only { position: relative; z-index: 2; pointer-events: auto; }
+  .icon-only { position: relative; z-index: 4001; pointer-events: auto; }
   .icon-only:hover { background:var(--sl-color-gray-6); }
   .menu { background:var(--sl-color-bg);
     border:1px solid var(--sl-color-gray-5); border-radius:8px; padding:.25rem 0; min-width: 9rem; box-shadow: 0 4px 12px rgba(0,0,0,.2); }
+  .menu { z-index: 4000; }
   .menu a { display:block; padding:.375rem .75rem; color:var(--sl-color-text); text-decoration:none; }
   .menu a:hover { background:var(--sl-color-gray-6); }
 </style>

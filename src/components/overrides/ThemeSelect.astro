@@ -9,7 +9,7 @@ import { Icon } from '@astrojs/starlight/components';
   </button>
 </starlight-theme-select>
 
-<script is:inline>
+<script is:inline type="module">
   const storageKey = 'starlight-theme';
   const parseTheme = (t) => (t === 'auto' || t === 'dark' || t === 'light' ? t : 'auto');
   const getPreferred = () => (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
@@ -56,7 +56,9 @@ import { Icon } from '@astrojs/starlight/components';
       });
     }
   }
-  customElements.define('starlight-theme-select', StarlightThemeSelect);
+  if (!customElements.get('starlight-theme-select')) {
+    customElements.define('starlight-theme-select', StarlightThemeSelect);
+  }
   // ensure initial apply on SSR-hydrated HTML attribute if needed
 </script>
 
@@ -64,7 +66,7 @@ import { Icon } from '@astrojs/starlight/components';
   .theme-toggle {
     background:none; border:0; padding:.25rem; border-radius:6px; color:var(--sl-color-text);
     display:inline-flex; align-items:center; justify-content:center; width:2rem; height:2rem;
-    position: relative; z-index: 2; pointer-events: auto;
+    position: relative; z-index: 4001; pointer-events: auto; /* high z-index to sit above mobile overlays */
   }
   .theme-toggle:hover { background:var(--sl-color-gray-6); }
   .icon { display:none; line-height:1; }
