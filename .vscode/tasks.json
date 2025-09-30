@@ -11,6 +11,17 @@
       ],
       "group": "test",
       "problemMatcher": []
+    },
+    {
+      "label": "dev",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-lc",
+        "npm run -s dev"
+      ],
+      "group": "build",
+      "problemMatcher": []
     }
   ]
 }

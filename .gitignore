@@ -26,3 +26,7 @@ pnpm-debug.log*
 # Temporary files
 tmp/
 temp/
+
+# Test result files
+test-results/
+!.last-run.json
