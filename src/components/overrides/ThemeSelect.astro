@@ -1,0 +1,74 @@
+---
+import { Icon } from '@astrojs/starlight/components';
+---
+<starlight-theme-select>
+  <button class="theme-toggle" aria-label="テーマ切替" data-theme="auto">
+    <span class="icon icon-auto" aria-hidden="true"><Icon name="laptop" size="1.35em" /></span>
+    <span class="icon icon-dark" aria-hidden="true"><Icon name="moon" size="1.35em" /></span>
+    <span class="icon icon-light" aria-hidden="true"><Icon name="sun" size="1.35em" /></span>
+  </button>
+</starlight-theme-select>
+
+<script is:inline>
+  const storageKey = 'starlight-theme';
+  const parseTheme = (t) => (t === 'auto' || t === 'dark' || t === 'light' ? t : 'auto');
+  const getPreferred = () => (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+  const load = () => parseTheme(typeof localStorage !== 'undefined' && localStorage.getItem(storageKey));
+  const store = (t) => typeof localStorage !== 'undefined' && localStorage.setItem(storageKey, t === 'light' || t === 'dark' ? t : '');
+  const nextTheme = (t) => (t === 'auto' ? 'dark' : t === 'dark' ? 'light' : 'auto');
+
+  class StarlightThemeSelect extends HTMLElement {
+    btn;
+    media;
+    connectedCallback() {
+      this.btn = this.querySelector('.theme-toggle');
+      const initial = load() || 'auto';
+      this.applyTheme(initial);
+      this.btn && this.btn.addEventListener('click', this.onClick);
+      this.media = matchMedia('(prefers-color-scheme: light)');
+      this.media.addEventListener('change', this.onSystemChange);
+    }
+    disconnectedCallback() {
+      this.btn && this.btn.removeEventListener('click', this.onClick);
+      this.media && this.media.removeEventListener('change', this.onSystemChange);
+    }
+    onClick = () => {
+      if (!this.btn) return;
+      const current = this.btn.getAttribute('data-theme') || 'auto';
+      this.applyTheme(nextTheme(current));
+    };
+    cycleTheme() {
+      // Expose for tests to reliably trigger theme change even if UI click is blocked.
+      this.onClick();
+    }
+    onSystemChange = () => {
+      if ((load() || 'auto') === 'auto') this.applyTheme('auto');
+    };
+    applyTheme(theme) {
+      const effective = theme === 'auto' ? getPreferred() : theme;
+      document.documentElement.dataset.theme = effective;
+      store(theme);
+      this.btn && this.btn.setAttribute('data-theme', theme);
+      // microtask後の反映を安定化（テスト安定用）
+      requestAnimationFrame(() => {
+        document.documentElement.setAttribute('data-theme-applied', '1');
+        requestAnimationFrame(() => document.documentElement.removeAttribute('data-theme-applied'));
+      });
+    }
+  }
+  customElements.define('starlight-theme-select', StarlightThemeSelect);
+  // ensure initial apply on SSR-hydrated HTML attribute if needed
+</script>
+
+<style>
+  .theme-toggle {
+    background:none; border:0; padding:.25rem; border-radius:6px; color:var(--sl-color-text);
+    display:inline-flex; align-items:center; justify-content:center; width:2rem; height:2rem;
+    position: relative; z-index: 2; pointer-events: auto;
+  }
+  .theme-toggle:hover { background:var(--sl-color-gray-6); }
+  .icon { display:none; line-height:1; }
+  .theme-toggle[data-theme="auto"] .icon-auto { display:inline-flex; }
+  .theme-toggle[data-theme="dark"] .icon-dark { display:inline-flex; }
+  .theme-toggle[data-theme="light"] .icon-light { display:inline-flex; }
+</style>

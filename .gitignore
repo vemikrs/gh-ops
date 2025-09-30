@@ -30,3 +30,4 @@ temp/
 # Test result files
 test-results/
 !.last-run.json
+playwright-report/

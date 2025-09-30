@@ -1,0 +1,105 @@
+---
+import config from 'virtual:starlight/user-config';
+import { Icon } from '@astrojs/starlight/components';
+
+function localizedPathname(url: URL, locale: string | undefined): string {
+  // Minimal re-implementation of Starlight's localizedUrl behavior for path prefixes.
+  const current = url.pathname;
+  const localeCodes = Object.keys(config.locales || {});
+  // strip existing non-root locale prefix
+  let base = current;
+  for (const code of localeCodes) {
+    if (code === 'root') continue;
+    const prefix = `/${code}`;
+    if (base === prefix) { base = '/'; break; }
+    if (base.startsWith(prefix + '/')) {
+      base = base.slice(prefix.length);
+      break;
+    }
+  }
+  // apply target locale prefix
+  if (!locale || locale === 'root') return base;
+  return base === '/' ? `/${locale}` : `/${locale}${base}`;
+}
+---
+{config.isMultilingual && (
+  <starlight-lang-select>
+    <div class="lang-picker">
+      <button class="icon-only" aria-haspopup="menu" aria-expanded="false" aria-label="Language"><Icon name="translate" size="1.35em" /></button>
+      <ul class="menu" role="menu" hidden>
+        {Object.entries(config.locales).map(([code, locale]) => (
+          <li role="none"><a role="menuitem" href={localizedPathname(Astro.url, code)} data-locale={code}>{(locale as any)!.label}</a></li>
+        ))}
+      </ul>
+    </div>
+  </starlight-lang-select>
+)}
+
+<script is:inline>
+  class StarlightLanguageSelect extends HTMLElement {
+    btn = null;
+    menu = null;
+    cleanup = [];
+    connectedCallback(){
+      this.btn = this.querySelector('.icon-only');
+      this.menu = this.querySelector('.menu');
+      if(!this.btn || !this.menu) return;
+
+      const onToggle = () => this.toggleMenu();
+      const onDocClick = (e) => { const t = e.target; if(!t || !this.contains(t)) this.closeMenu(); };
+      const onKey = (e) => { if(e.key === 'Escape') this.closeMenu(); };
+      this.btn.addEventListener('click', onToggle);
+      document.addEventListener('click', onDocClick);
+      document.addEventListener('keydown', onKey);
+      this.cleanup = [
+        () => this.btn && this.btn.removeEventListener('click', onToggle),
+        () => document.removeEventListener('click', onDocClick),
+        () => document.removeEventListener('keydown', onKey),
+      ];
+      // mark ready for tests and external scripts
+      this.setAttribute('data-ready', 'true');
+    }
+    disconnectedCallback(){ this.cleanup.forEach((fn) => fn()); }
+    toggleMenu(){
+      if(!this.menu || !this.btn) return;
+      const willOpen = this.menu.hasAttribute('hidden');
+      if(willOpen) this.openMenu(); else this.closeMenu();
+    }
+    openMenu(){
+      if(!this.menu || !this.btn) return;
+      this.menu.removeAttribute('hidden');
+      this.btn.setAttribute('aria-expanded', 'true');
+      // position fixed & auto drop direction
+      const r = this.btn.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - r.bottom;
+      const spaceAbove = r.top;
+      const preferUp = spaceBelow < 160 && spaceAbove > spaceBelow; // 160px threshold
+      this.menu.style.position = 'fixed';
+      this.menu.style.right = `${Math.max(8, window.innerWidth - r.right)}px`;
+      this.menu.style.top = preferUp ? '' : `${Math.max(8, r.bottom + 4)}px`;
+      this.menu.style.bottom = preferUp ? `${Math.max(8, window.innerHeight - r.top + 4)}px` : '';
+      this.menu.style.maxHeight = '60vh';
+      this.menu.style.overflow = 'auto';
+      this.menu.style.zIndex = '1000';
+    }
+    closeMenu(){
+      if(!this.menu || !this.btn) return;
+      this.menu.setAttribute('hidden', '');
+      this.btn.setAttribute('aria-expanded', 'false');
+    }
+  }
+  if (!customElements.get('starlight-lang-select')) {
+    customElements.define('starlight-lang-select', StarlightLanguageSelect);
+  }
+</script>
+
+<style>
+  .lang-picker { position: relative; }
+  .icon-only { background:none; border:0; padding:.25rem; border-radius:6px; color:var(--sl-color-text); }
+  .icon-only { position: relative; z-index: 2; pointer-events: auto; }
+  .icon-only:hover { background:var(--sl-color-gray-6); }
+  .menu { background:var(--sl-color-bg);
+    border:1px solid var(--sl-color-gray-5); border-radius:8px; padding:.25rem 0; min-width: 9rem; box-shadow: 0 4px 12px rgba(0,0,0,.2); }
+  .menu a { display:block; padding:.375rem .75rem; color:var(--sl-color-text); text-decoration:none; }
+  .menu a:hover { background:var(--sl-color-gray-6); }
+</style>

@@ -5,7 +5,7 @@ import starlight from '@astrojs/starlight';
 const sidebar = [
   // 0. Welcome page
   { label: 'Introduction', link: '/', },
-  
+
   // 1. Guidelines - 実践的な運用ガイド
   {
     label: 'Guidelines',
@@ -28,7 +28,7 @@ const sidebar = [
       collapsed: true,
     },
   },
-  
+
   // 3. Bible (参照用) - 迷子になった時の道標
   {
     label: 'Bible - Principles',
@@ -73,6 +73,10 @@ export default defineConfig({
         '/src/styles/custom.css',
         // '/src/styles/mermaid.css', // 図の見た目調整が必要になったら有効化
       ],
+      components: {
+        ThemeSelect: './src/components/overrides/ThemeSelect.astro',
+        LanguageSelect: './src/components/overrides/LanguageSelect.astro',
+      },
 
     }),
   ],

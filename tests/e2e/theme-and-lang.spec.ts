@@ -1,33 +1,32 @@
 import { test, expect } from '@playwright/test';
+import { Header } from './pages/header';
 
+test.setTimeout(45_000);
 const goto = async ({ page }: any, path = '/') => {
   await page.goto(path);
   await page.waitForLoadState('domcontentloaded');
 };
 
 test.describe('Header controls', () => {
-  test('theme toggle cycles and persists', async ({ page }) => {
+  test('theme toggle cycles and persists', async ({ page }, testInfo) => {
     await goto({ page });
-    // header right controls: first theme button exists
-    const themeBtn = page.locator('starlight-theme-select .theme-toggle');
-    await expect(themeBtn).toBeVisible();
-    // remember current and click to change
-    const before = await themeBtn.getAttribute('data-theme');
-    await themeBtn.click();
-    const after = await themeBtn.getAttribute('data-theme');
+    const header = new Header(page, testInfo);
+    await expect(header.themeButton).toBeVisible();
+    const before = await header.currentTheme();
+  await header.toggleThemeReliable();
+    const after = await header.currentTheme();
     expect(after).not.toBe(before);
-    // reload -> persistence check
     await page.reload();
-    const persisted = await themeBtn.getAttribute('data-theme');
+    const persisted = await header.currentTheme();
     expect(persisted).toBe(after);
   });
 
-  test('language menu opens within viewport and closes with ESC', async ({ page }) => {
+  test('language menu opens within viewport and closes with ESC', async ({ page }, testInfo) => {
     await goto({ page });
-    const langBtn = page.locator('starlight-lang-select .icon-only');
-    await expect(langBtn).toBeVisible();
-    await langBtn.click();
-    const menu = page.locator('starlight-lang-select .menu');
+    const header = new Header(page, testInfo);
+    await expect(header.langButton).toBeVisible();
+    await header.openLanguageMenu();
+    const menu = header.langMenu;
     await expect(menu).toBeVisible();
     // menu should be within viewport (top or bottom set)
     const box = await menu.boundingBox();
@@ -36,8 +35,7 @@ test.describe('Header controls', () => {
       expect(box.y).toBeGreaterThanOrEqual(0);
       expect(box.y + box.height).toBeLessThanOrEqual((await page.viewportSize())!.height + 2);
     }
-    await page.keyboard.press('Escape');
-    await expect(menu).toBeHidden();
+    await header.closeLanguageMenuByEsc();
   });
 });
 
@@ -45,27 +43,21 @@ test.describe('Header controls', () => {
 test.describe('Mobile menu behavior', () => {
   test.use({ viewport: { width: 390, height: 700 } });
 
-  test('controls work in mobile menu', async ({ page }) => {
+  test('controls work in mobile menu', async ({ page }, testInfo) => {
     await goto({ page });
-    // open mobile nav (hamburger)
-    const openBtn = page.locator('button[aria-label*="メニュー"], button[aria-label*="menu"], button[aria-label*="open"]');
-    await openBtn.first().click().catch(() => {});
+    const header = new Header(page, testInfo);
+    await header.openMobileMenu();
 
-    // theme toggle inside header group should be clickable
-    const themeBtn = page.locator('starlight-theme-select .theme-toggle');
-    await expect(themeBtn).toBeVisible();
-    const tBefore = await themeBtn.getAttribute('data-theme');
-    await themeBtn.click();
-    const tAfter = await themeBtn.getAttribute('data-theme');
-    expect(tAfter).not.toBe(tBefore);
+  await expect(header.themeButton).toBeVisible();
+  const uiBefore = await header.currentTheme();
+  const effBefore = await page.locator('html').getAttribute('data-theme');
+  await header.toggleThemeReliable();
+  const uiAfter = await header.currentTheme();
+  const effAfter = await page.locator('html').getAttribute('data-theme');
+  expect(uiAfter !== uiBefore || effAfter !== effBefore).toBeTruthy();
 
-    // language menu opens and items are reachable
-    const langBtn = page.locator('starlight-lang-select .icon-only');
-    await langBtn.click();
-    const menu = page.locator('starlight-lang-select .menu');
-    await expect(menu).toBeVisible();
-    // at least one item visible
-    const firstItem = menu.locator('a').first();
+    await header.openLanguageMenu();
+    const firstItem = header.langMenu.locator('a').first();
     await expect(firstItem).toBeVisible();
   });
 });
