@@ -1,0 +1,23 @@
+---
+title: Personal Access Token（PAT）共有禁止
+actor: developer
+level: MUST NOT
+applies_to: all
+exceptions: |
+  なし
+---
+
+## 規範
+- MUST NOT: PAT を共有・転送・チーム保管してはならない。
+- MUST: gh auth / Codespaces Secrets / Actions Secrets を用いて個別に認証する。
+
+## 理由（Rationale）
+個人認証情報の共有は監査性と漏洩リスクの観点で重大な違反となるため。
+
+## 手順（How to）
+1. gh auth login で個人環境に認証
+2. 個人・環境ごとに必要最小権限で発行
+3. 共有の要請があった場合は即座に報告し中止
+
+## 参照（References）
+- [GitHub Docs: About authentication to GitHub](https://docs.github.com/authentication/keeping-your-account-and-data-secure/about-authentication-to-github)
