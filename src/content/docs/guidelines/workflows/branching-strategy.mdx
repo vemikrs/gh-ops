@@ -1,0 +1,111 @@
+---
+title: ブランチ戦略
+level: SHOULD
+applies_to: all_repositories
+sidebar:
+  order: 10
+---
+
+本ガイドは [GitHub Flow](https://docs.github.com/get-started/using-github/github-flow) を基礎に、**エンタープライズ開発に適合する拡張パターン**を提示します。  
+
+目的はチーム規模や監査要件に応じて、以下の事項を安全にスケーリングできる運用を確立します。  
+1. **主要ブランチを常時健全（常時ビルド可能・必須チェック合格）** に保つこと
+2. **安全なテスト管理・出荷判定を行う**こと
+
+---
+
+## 1. コンセプト（Why）
+
+- **main 常時健全**  
+  - main は常にビルド可能かつ、必須チェック（単体テスト、静的解析、セキュリティ検証）に合格している状態を維持します。  
+- **release で出荷判定**  
+  - E2E、性能、コントラクトテストは `release/vX.Y.Z` (例: `release/v1.0.0`) で凍結して実施。  
+  - 合格後にタグを切り、本番デプロイへ進めます。  
+
+---
+
+## 2. 基本原則（Principles）
+
+| ブランチ | ポリシー | 備考・例 |
+| --- | --- | --- |
+| `main` | 常時健全、PR経由のみ（merge queue推奨） | 直push禁止、レビュー1+と必須ステータスチェック合格のみ。Auto-merge/merge queue 有効化推奨 |
+| `feature/*` | 短命、必ずPR経由で `main` へ | 例: `feature/add-theme-toggle` → PR → `main`。長期放置禁止（1–2週以内にクローズ） |
+| `hotfix/*` | 本番タグから派生、即時タグ化、本流へ逆流 | 例: 本番タグ `v1.2.3` 起点 → `hotfix/security-patch` → `v1.2.4` タグ発行 → `main`/`release` に逆流 |
+| `release/*` | 必要時のみ短命（E2E・承認用） | 例: `release/v1.3.0` でE2E/性能/契約テスト固定、承認後に `v1.3.0` タグ発行 |
+| `prod` | 人手禁止、CI/CD専用のマーカー | 例: CI/CD が `v1.3.0` のコミットへ fast-forward 更新。保護規則で人手更新を禁止 |
+| `tags` | 本番リリースの基準点 | 例: `v1.3.0`（署名付き推奨）。SBOMやテストレポート等の証跡と紐付け |
+
+{/* 図1: 基本ブランチ構造 */}
+
+---
+
+## 3. 運用パターン（Scaling Patterns）
+
+### Essential（小規模・PoC）
+- main / feature / hotfix のみ  
+- GitHub Flowほぼそのまま  
+- 本番はタグのみ、`prod` ブランチは省略可  
+
+### Standard（中規模・基幹）
+- release/**** を短命で利用  
+- prod をCI/CD専用マーカーとして導入  
+- 本番タグと監査ログを連携  
+
+### Advanced（大規模・監査必須）
+- develop を導入、長命 release/* を許容  
+- 顧客承認・外部監査に対応  
+- Evidenceパッケージ（SBOM、テストレポート、承認ログ）必須  
+- **Option**: 署名付きタグ、ビルド署名（Sigstore等）  
+
+{/* 図2: パターン比較表 */}
+
+---
+
+## 4. ポリシー（Policies）
+
+### ブランチ保護
+- `main`: 直push禁止、必須レビュー、必須ステータスチェック  
+- `prod`: 人手禁止、CI/CDのみ更新可  
+- `release/*`: 短命運用、E2Eチェック必須  
+
+### マージ方式（Merge Strategy）
+- **Essential**：Squash または Merge Commit（チームで統一）  
+- **Standard**：**Merge Commit を既定**（Squashは任意併用可）  
+- **Advanced**：**Merge Commit のみ**（Squash/Rebaseは無効）  
+- Rebase merge は原則禁止（監査・整合性のため）  
+
+---
+
+## 5. 手順（Happy Path）
+
+1. feature ブランチを作成  
+2. PR 作成 → CI 合格  
+3. レビュー 1+ Approve  
+4. merge queue / auto-merge で main に反映  
+5. 必要時 release/vX.Y.Z を作成 → E2E・承認 → タグ → prod 更新  
+
+{/* 図3: 時系列フロー */}
+
+---
+
+## 6. 例外対応（Exceptions）
+
+- **Hotfix**
+  - 本番タグ起点  
+  - 短時間 freeze / merge queue  
+  - タグ発行後 main / release に逆流  
+- **部分反映**
+  - cherry-pick ワークフローを利用  
+- **LTS対応**
+  - backport 専用ブランチのみ許可  
+
+---
+
+## 7. まとめ
+
+- **main = 常時健全（必須CI合格）**  
+- **出荷判定は release で実施、タグがリリース基準**  
+- Essential / Standard / Advanced のパターンでチーム規模や要件に応じて選択  
+- Advanced では必要に応じて署名付きタグやビルド署名を導入可能  
+
+---
